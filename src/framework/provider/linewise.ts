@@ -1,41 +1,36 @@
 import * as vscode from 'vscode';
-import { TextProvider } from '../../types/TextProvider';
+import { LinewiseProcessor } from '../../types/LinewiseProcessor';
 
-export class LinewiseProvider implements TextProvider {
+export class LinewiseProvider implements vscode.TextDocumentContentProvider {
 
+    processor? : LinewiseProcessor;
     currentFile? : vscode.TextDocument;
     currentLine = 0;
 
-    constructor() {
-        this.currentFile = vscode.window.visibleTextEditors[0].document;
+    constructor(processor? : LinewiseProcessor) {
+        this.setProcessor(processor);
+        this.currentFile = vscode.window.activeTextEditor?.document;
         this.currentLine = 0;
     }
 
-    get() : string {
-
-        const currentFile = vscode.window.visibleTextEditors[0].document;
-        const currentFileText = currentFile.getText().split(/\n/);
-        currentFileText.forEach(line => {
-            
-        });
-        return '';
+    setProcessor(processor? : LinewiseProcessor) {
+        this.processor = processor;
     }
 
-    processAll(processor : LinewiseProcessor) : void {
+    onDidChange?: vscode.Event<vscode.Uri> | undefined;
+
+    provideTextDocumentContent(uri: vscode.Uri, token: vscode.CancellationToken): vscode.ProviderResult<string> {
         const output = new Array<string>();
 
         const currentFileText = this.currentFile?.getText().split(/\n/);
         currentFileText?.forEach((line: string) => {
-            const processedLine = processor?.process(line);
+            const processedLine = this.processor?.process(line);
             if (processedLine !== null) {
                 output.push(processedLine!);
             }
         });
 
-        this.showOutput(output.join('\n'));
-    }
-
-    showOutput(text : string) {
-        console.log('output : ' + text);
+        console.log('output : ' + output);
+        return output.join('\n');
     }
 }

@@ -10,14 +10,14 @@
 		"Other"
 	],
 	"activationEvents": [
-        "onCommand:operation-crunch-text.helloWorld"
+        "onCommand:operation-crunch-text.runCommand"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
 		"commands": [
 			{
-				"command": "operation-crunch-text.helloWorld",
-				"title": "Hello World"
+				"command": "operation-crunch-text.runCommand",
+				"title": "Operation Crunch-Text: Run Cruncher Commmand"
 			}
 		]
 	},
